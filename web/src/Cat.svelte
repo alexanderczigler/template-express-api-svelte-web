@@ -31,6 +31,7 @@
 
   h3 {
     margin-bottom: 10px;
+    font-size: 1em;
   }
 
   p {

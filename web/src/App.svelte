@@ -27,11 +27,11 @@
   h2 {
     color: #cc6600;
     text-transform: uppercase;
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: 600;
   }
 
-  .footer {
+  p.info {
     color: #cc6600;
     text-transform: uppercase;
     font-size: 0.5em;
@@ -63,6 +63,7 @@
   {#await catsPromise}
     <p>Loading...</p>
   {:then cats}
+    <p class="info">Number of cats: {cats.length}</p>
     {#each cats as cat}
       <Cat {cat} on:reload={reloadCats} />
     {/each}
@@ -71,5 +72,5 @@
   {/await}
 
   <hr />
-  <p class="footer">Sample web app</p>
+  <p class="info">Sample web app</p>
 </main>

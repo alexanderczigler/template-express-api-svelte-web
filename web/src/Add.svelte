@@ -27,7 +27,7 @@
   copyCopyCat()
 </script>
 
-<span>
+<p>
   Breed:
   <br />
   <input type="text" bind:value={newCat.breed} />
@@ -41,4 +41,4 @@
   <input type="text" bind:value={newCat.name} />
   <br />
   <button on:click={addCat}>Add</button>
-</span>
+</p>
