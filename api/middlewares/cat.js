@@ -4,8 +4,6 @@ module.exports = {
   add: (req, res, next) => {
     const id = addCat(req.body)
 
-    console.log('ok', id)
-
     res.send({
       id,
       ...req.body
@@ -18,11 +16,7 @@ module.exports = {
   },
   del: (req, res, next) => {
     const id = req.params.id
-    console.log('hej')
-
     const cat = getCatById(id)
-
-    console.log('hej', cat)
 
     if (cat) {
       deleteCat(id)

@@ -58,7 +58,6 @@ export const API = {
       return await del(`/cat/${id}`)
     },
     List: async () => {
-      console.log('aha')
       return await get('/cat')
     },
   },
