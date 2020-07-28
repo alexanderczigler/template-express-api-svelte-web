@@ -1,6 +1,9 @@
 <script>
   export let cat
   import { API } from './api.js'
+  import { createEventDispatcher } from 'svelte'
+
+  const dispatch = createEventDispatcher()
 
   const deleteCat = async id => {
     try {
@@ -13,6 +16,7 @@
     }
 
     // TODO: Emit event.
+    dispatch('reload', {})
   }
 </script>
 

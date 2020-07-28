@@ -16,15 +16,17 @@
       )
     }
 
+    reloadCats()
     copyCopyCat()
-    catsPromise = API.Cats.List()
   }
 
   const copyCopyCat = () => {
     newCat = JSON.parse(JSON.stringify(copyCat))
   }
 
-  // TODO: Listen for events and update the cat list
+  function reloadCats() {
+    catsPromise = API.Cats.List()
+  }
 
   // TODO: Move the "add cat" function into its own thing.
   copyCopyCat()
@@ -84,13 +86,13 @@
     <br />
     <input type="text" bind:value={newCat.name} />
     <br />
-    <button on:click={() => addCat()}>Add</button>
+    <button on:click={addCat}>Add</button>
   </span>
 
   <h2>Cats</h2>
   {#await catsPromise then cats}
     {#each cats as cat}
-      <Cat {cat} />
+      <Cat {cat} on:reload={reloadCats} />
     {/each}
   {/await}
 
