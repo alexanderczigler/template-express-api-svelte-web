@@ -17,91 +17,87 @@ describe('#cat middlewares', () => {
   }
   const next = jest.fn()
 
-  describe('add (successful)', () => {
+  describe('add(...)', () => {
     const mockCat = {
       breed: 'Maine Coon',
       eyeColor: 'Old Gold',
       name: 'Gramsci',
     }
 
-    beforeEach(() => {
-      databaseAdapter.addCat.mockResolvedValue(
-        '31106574-97fa-429b-ab0a-05ecc5b8c264'
-      )
-    })
+    describe('when successful', () => {
+      beforeEach(() => {
+        databaseAdapter.addCat.mockResolvedValue(
+          '31106574-97fa-429b-ab0a-05ecc5b8c264'
+        )
+      })
 
-    it('calls database adapter to add the cat', async () => {
-      await middleware.add(
-        {
-          body: {
-            ...mockCat,
+      it('calls database adapter to add the cat', async () => {
+        await middleware.add(
+          {
+            body: {
+              ...mockCat,
+            },
           },
-        },
-        res,
-        next
-      )
-      expect(databaseAdapter.addCat).toHaveBeenCalledWith(
-        expect.objectContaining({
-          breed: 'Maine Coon',
-          eyeColor: 'Old Gold',
-          name: 'Gramsci',
-        })
-      )
-    })
+          res,
+          next
+        )
+        expect(databaseAdapter.addCat).toHaveBeenCalledWith(
+          expect.objectContaining({
+            breed: 'Maine Coon',
+            eyeColor: 'Old Gold',
+            name: 'Gramsci',
+          })
+        )
+      })
 
-    it('returns the added cat with its new ID', async () => {
-      await middleware.add(
-        {
-          body: {
-            ...mockCat,
+      it('returns the added cat with its new ID', async () => {
+        await middleware.add(
+          {
+            body: {
+              ...mockCat,
+            },
           },
-        },
-        res,
-        next
-      )
+          res,
+          next
+        )
 
-      expect(res.send).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '31106574-97fa-429b-ab0a-05ecc5b8c264',
-          ...mockCat,
-        })
-      )
-    })
-  })
-
-  describe('add (failing)', () => {
-    const mockCat = {
-      breed: 'Maine Coon',
-      eyeColor: 'Old Gold',
-      name: 'Gramsci',
-    }
-
-    const errorMessage = 'An unexpected error occurred when adding the cat.'
-    beforeEach(() => {
-      databaseAdapter.addCat.mockImplementation(() => {
-        throw new Error(errorMessage)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: '31106574-97fa-429b-ab0a-05ecc5b8c264',
+            ...mockCat,
+          })
+        )
       })
     })
 
-    it('returns a 500 error if the underlying database layer throws an error', async () => {
-      await middleware.add(
-        {
-          body: {
-            ...mockCat,
-          },
-        },
-        res,
-        next
-      )
-
-      expect(res.statusCode).toBe(500)
-      expect(res.send).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: errorMessage,
+    describe('when failing', () => {
+      const errorMessage = 'An unexpected error occurred when adding the cat.'
+      beforeEach(() => {
+        databaseAdapter.addCat.mockImplementation(() => {
+          throw new Error(errorMessage)
         })
-      )
+      })
 
-      expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      it('returns a 500 error if the underlying database layer throws an error', async () => {
+        await middleware.add(
+          {
+            body: {
+              ...mockCat,
+            },
+          },
+          res,
+          next
+        )
+
+        expect(res.statusCode).toBe(500)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
     })
   })
 })
