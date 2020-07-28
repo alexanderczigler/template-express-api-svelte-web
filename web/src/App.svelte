@@ -1,35 +1,13 @@
 <script>
   import { API } from './api.js'
   import Cat from './Cat.svelte'
+  import Add from './Add.svelte'
 
   let catsPromise = API.Cats.List()
-  let newCat = {}
-  const copyCat = { breed: '', eyeColor: '', name: '' }
-
-  const addCat = async () => {
-    try {
-      await API.Cats.Add(newCat)
-    } catch (error) {
-      console.error(error)
-      alert(
-        'Oh no! Something went wrong when adding the cat, check the console for more details.'
-      )
-    }
-
-    reloadCats()
-    copyCopyCat()
-  }
-
-  const copyCopyCat = () => {
-    newCat = JSON.parse(JSON.stringify(copyCat))
-  }
 
   function reloadCats() {
     catsPromise = API.Cats.List()
   }
-
-  // TODO: Move the "add cat" function into its own thing.
-  copyCopyCat()
 </script>
 
 <style>
@@ -79,21 +57,7 @@
   </p>
 
   <h2>Add a cat</h2>
-  <span>
-    Breed:
-    <br />
-    <input type="text" bind:value={newCat.breed} />
-    <br />
-    Eye color:
-    <br />
-    <input type="text" bind:value={newCat.eyeColor} />
-    <br />
-    Name:
-    <br />
-    <input type="text" bind:value={newCat.name} />
-    <br />
-    <button on:click={addCat}>Add</button>
-  </span>
+  <Add on:reload={reloadCats} />
 
   <h2>Cats</h2>
   {#await catsPromise}
@@ -103,7 +67,7 @@
       <Cat {cat} on:reload={reloadCats} />
     {/each}
   {:catch error}
-    <p style="color: red">{error.message}</p>
+    <p style="color: red">Error: {error.message}</p>
   {/await}
 
   <hr />
