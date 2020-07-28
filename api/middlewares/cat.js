@@ -21,8 +21,14 @@ module.exports = {
     }
   },
   all: async (_, res, next) => {
-    res.send(await getAllCats())
-    next()
+    try {
+      res.send(await getAllCats())
+      next()
+    } catch (error) {
+      res.statusCode = 500
+      res.send({ message: 'An unexpected error occurred when adding the cat.' })
+      return next(error)
+    }
   },
   del: async (req, res, next) => {
     const id = req.params.id
