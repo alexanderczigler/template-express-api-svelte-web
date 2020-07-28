@@ -15,7 +15,6 @@
       )
     }
 
-    // TODO: Emit event.
     dispatch('reload', {})
   }
 </script>
