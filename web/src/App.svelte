@@ -53,6 +53,12 @@
     font-weight: 600;
   }
 
+  .footer {
+    color: #cc6600;
+    text-transform: uppercase;
+    font-size: 0.5em;
+  }
+
   @media (min-width: 640px) {
     main {
       max-width: none;
@@ -90,10 +96,16 @@
   </span>
 
   <h2>Cats</h2>
-  {#await catsPromise then cats}
+  {#await catsPromise}
+    <p>Loading...</p>
+  {:then cats}
     {#each cats as cat}
       <Cat {cat} on:reload={reloadCats} />
     {/each}
+  {:catch error}
+    <p style="color: red">{error.message}</p>
   {/await}
 
+  <hr />
+  <p class="footer">Sample web app</p>
 </main>
