@@ -1,25 +1,35 @@
-const { addCat, deleteCat, getAllCats, getCatById } = require('../adapters/database')
+const {
+  addCat,
+  deleteCat,
+  getAllCats,
+  getCatById,
+} = require('../adapters/database')
 
 module.exports = {
-  add: (req, res, next) => {
-    const id = addCat(req.body)
-
-    res.send({
-      id,
-      ...req.body
-    })
+  add: async (req, res, next) => {
+    try {
+      const id = await addCat(req.body)
+      res.send({
+        id,
+        ...req.body,
+      })
+      next()
+    } catch (error) {
+      res.statusCode = 500
+      res.send({ message: 'An unexpected error occurred when adding the cat.' })
+      return next(error)
+    }
+  },
+  all: async (_, res, next) => {
+    res.send(await getAllCats())
     next()
   },
-  all: (_, res, next) => {
-    res.send(getAllCats())
-    next()
-  },
-  del: (req, res, next) => {
+  del: async (req, res, next) => {
     const id = req.params.id
-    const cat = getCatById(id)
+    const cat = await getCatById(id)
 
     if (cat) {
-      deleteCat(id)
+      await deleteCat(id)
       res.send({})
       return next()
     }
@@ -29,9 +39,9 @@ module.exports = {
     res.send(error)
     throw new Error(error.message)
   },
-  get: (req, res, next) => {
+  get: async (req, res, next) => {
     const id = req.params.id
-    const cat = getCatById(id)
+    const cat = await getCatById(id)
 
     if (cat) {
       res.send(cat)
@@ -42,5 +52,5 @@ module.exports = {
     res.statusCode = 404
     res.send(error)
     throw new Error(error.message)
-  }
+  },
 }

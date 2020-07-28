@@ -20,26 +20,36 @@ const data = {
       eyeColor: 'Blue',
       name: 'Zelda',
     },
-  ]
+  ],
 }
 
 module.exports = {
-  addCat: cat => {
-    cat.id = newId()
-    data.cats.push(cat)
-    return cat.id
+  addCat: async (cat) => {
+    return new Promise((resolve) => {
+      cat.id = newId()
+      data.cats.push(cat)
+      return resolve(cat.id)
+    })
   },
-  deleteCat: id => {
-    for (let i = 0; i < data.cats.length; i++) {
-      if (data.cats[i].id === id) {
-        data.cats.splice(i, 1)
+  deleteCat: async (id) => {
+    return new Promise((resolve) => {
+      for (let i = 0; i < data.cats.length; i++) {
+        if (data.cats[i].id === id) {
+          data.cats.splice(i, 1)
+        }
       }
-    }
+
+      return resolve()
+    })
   },
-  getAllCats: () => {
-    return data.cats
+  getAllCats: async () => {
+    return new Promise((resolve) => {
+      return resolve(data.cats)
+    })
   },
-  getCatById: id => {
-    return data.cats.filter(cat => cat.id === id)[0]
-  }
+  getCatById: async (id) => {
+    return new Promise((resolve) => {
+      return resolve(data.cats.filter((cat) => cat.id === id)[0])
+    })
+  },
 }
