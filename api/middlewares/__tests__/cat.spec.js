@@ -160,4 +160,69 @@ describe('#cat middlewares', () => {
       })
     })
   })
+
+  describe('del(...)', () => {
+    const id = 'meow'
+
+    describe('when successful', () => {
+      beforeEach(() => {
+        databaseAdapter.getCatById.mockResolvedValue({ id })
+        databaseAdapter.deleteCat.mockResolvedValue()
+      })
+
+      it('calls database adapter to delete the cat', async () => {
+        await middleware.del({ params: { id } }, res, next)
+        expect(databaseAdapter.deleteCat).toHaveBeenCalledWith(id)
+      })
+
+      it('returns an empty object', async () => {
+        await middleware.del({ params: { id: 'meow' } }, res, next)
+        expect(res.send).toHaveBeenCalledWith({})
+      })
+    })
+
+    describe('when failing', () => {
+      const mockCat = {
+        breed: 'Maine Coon',
+        eyeColor: 'Old Gold',
+        name: 'Gramsci',
+      }
+
+      const errorMessage = 'An unexpected error occurred when adding the cat.'
+      beforeEach(() => {
+        databaseAdapter.getCatById.mockResolvedValueOnce(mockCat)
+        databaseAdapter.getCatById.mockResolvedValueOnce(null)
+        databaseAdapter.deleteCat.mockImplementation(() => {
+          throw new Error(errorMessage)
+        })
+      })
+
+      it('returns a 500 error if the underlying database layer throws an error', async () => {
+        await middleware.del({ params: { id } }, res, next)
+
+        expect(res.statusCode).toBe(500)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+
+      it('returns a 404 when trying to delete a non-existing cat', async () => {
+        await middleware.del({ params: { id } }, res, next)
+        const errorMessage = 'Could not find any cat having ID meow.'
+
+        expect(res.statusCode).toBe(404)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+    })
+  })
 })

@@ -32,18 +32,25 @@ module.exports = {
   },
   del: async (req, res, next) => {
     const id = req.params.id
-    const cat = await getCatById(id)
 
-    if (cat) {
+    try {
+      cat = await getCatById(id)
+
+      if (!cat) {
+        const message = `Could not find any cat having ID ${id}.`
+        res.statusCode = 404
+        res.send({ message })
+        return next(new Error(message))
+      }
+
       await deleteCat(id)
       res.send({})
       return next()
+    } catch (error) {
+      res.statusCode = 500
+      res.send({ message: 'An unexpected error occurred when adding the cat.' })
+      return next(error)
     }
-
-    const error = { message: `Could not find any cat having ID ${id}.` }
-    res.statusCode = 404
-    res.send(error)
-    throw new Error(error.message)
   },
   get: async (req, res, next) => {
     const id = req.params.id
