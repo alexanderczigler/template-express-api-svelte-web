@@ -20,17 +20,24 @@
 </script>
 
 <style>
-  span {
-    width: 500px;
-    background-color: #ff6600;
+  div {
+    display: inline-block;
+    margin-right: 24px;
+    border-width: 1px;
+    border-radius: 4px;
+    border-color: #d0d0d0;
+    border-style: solid;
+    padding: 8px;
   }
 
-  i {
-    color: #909090;
+  span.highlight {
+    font-weight: 300;
+    color: #9a1750;
   }
 
   h3 {
     margin-bottom: 10px;
+    margin-top: 0;
     font-size: 1em;
   }
 
@@ -39,19 +46,19 @@
   }
 </style>
 
-<span>
+<div>
   <h3>{cat.name}</h3>
   <p>
-    <i>Breed:</i>
+    <span class="highlight">Breed:</span>
     {cat.breed}
     <br />
-    <i>Eye Color:</i>
+    <span class="highlight">Eye Color:</span>
     {cat.eyeColor}
     <br />
-    <i>ID:</i>
+    <span class="highlight">ID:</span>
     {cat.id}
     <br />
     <br />
     <button on:click={() => deleteCat(cat.id)}>Delete</button>
   </p>
-</span>
+</div>

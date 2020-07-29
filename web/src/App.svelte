@@ -18,22 +18,19 @@
   }
 
   h1 {
-    color: #cc6600;
     text-transform: uppercase;
     font-size: 3em;
     font-weight: 100;
   }
 
   h2 {
-    color: #cc6600;
     text-transform: uppercase;
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 100;
+    margin-top: 42px;
   }
 
   p.info {
-    color: #cc6600;
-    text-transform: uppercase;
     font-size: 0.5em;
   }
 
@@ -56,10 +53,10 @@
     fetched from the restful API.
   </p>
 
-  <h2>Add a cat</h2>
+  <h2>Add a new cat</h2>
   <Add on:reload={reloadCats} />
 
-  <h2>Cats</h2>
+  <h2>List cats</h2>
   {#await catsPromise}
     <p>Loading...</p>
   {:then cats}
@@ -70,7 +67,4 @@
   {:catch error}
     <p style="color: red">Error: {error.message}</p>
   {/await}
-
-  <hr />
-  <p class="info">Sample web app</p>
 </main>

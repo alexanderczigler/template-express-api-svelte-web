@@ -27,18 +27,45 @@
   copyCopyCat()
 </script>
 
-<p>
-  Breed:
-  <br />
-  <input type="text" bind:value={newCat.breed} />
-  <br />
-  Eye color:
-  <br />
-  <input type="text" bind:value={newCat.eyeColor} />
-  <br />
-  Name:
-  <br />
-  <input type="text" bind:value={newCat.name} />
-  <br />
-  <button on:click={addCat}>Add</button>
-</p>
+<style>
+  div {
+    display: inline-block;
+    margin-top: 0;
+  }
+
+  div > p {
+    margin-top: 0;
+    font-weight: 300;
+    color: #9a1750;
+  }
+</style>
+
+<div>
+  <p>
+    Breed:
+    <br />
+    <input type="text" bind:value={newCat.breed} />
+  </p>
+</div>
+
+<div>
+  <p>
+    Eye color:
+    <br />
+    <input type="text" bind:value={newCat.eyeColor} />
+  </p>
+</div>
+
+<div>
+  <p>
+    Name:
+    <br />
+    <input type="text" bind:value={newCat.name} />
+  </p>
+</div>
+
+<div>
+  <p>
+    <button on:click={addCat}>Add</button>
+  </p>
+</div>
