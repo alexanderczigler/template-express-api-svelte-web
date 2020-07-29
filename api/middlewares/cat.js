@@ -8,6 +8,28 @@ const {
 module.exports = {
   add: async (req, res, next) => {
     try {
+      let message = ''
+      res.statusCode = 400
+
+      if (!req.body.breed) {
+        message = 'Missing field: breed'
+      }
+
+      if (!req.body.eyeColor) {
+        message = 'Missing field: eyeColor'
+      }
+
+      if (!req.body.name) {
+        message = 'Missing field: name'
+      }
+
+      if (!!message) {
+        res.send({ message })
+        return next(new Error(message))
+      }
+
+      res.statusCode = 200
+
       const id = await addCat(req.body)
       res.send({
         id,

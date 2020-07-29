@@ -9,15 +9,15 @@
   const addCat = async () => {
     try {
       await API.Cats.Add(newCat)
+      copyCopyCat()
     } catch (error) {
       console.error(error)
       alert(
-        'Oh no! Something went wrong when adding the cat, check the console for more details.'
+        `Oh no! Something went wrong when adding the cat, check the console for more details.`
       )
     }
 
     dispatch('reload', {})
-    copyCopyCat()
   }
 
   const copyCopyCat = () => {

@@ -12,7 +12,7 @@ const call = async ({ uri, options }) => {
     return response.json()
   }
 
-  console.error(response.status, response.statusText)
+  console.error(response.status, response.statusText, response.json())
   throw new Error(response.statusText)
 }
 
@@ -25,7 +25,7 @@ const get = async (uri) => {
 const del = async (uri) => {
   return await call({
     uri,
-    options: { method: 'DELETE' }
+    options: { method: 'DELETE' },
   })
 }
 
@@ -51,10 +51,10 @@ const post = async (uri, data) => {
  */
 export const API = {
   Cats: {
-    Add: async cat => {
+    Add: async (cat) => {
       return await post('/cat', cat)
     },
-    Delete: async id => {
+    Delete: async (id) => {
       return await del(`/cat/${id}`)
     },
     List: async () => {

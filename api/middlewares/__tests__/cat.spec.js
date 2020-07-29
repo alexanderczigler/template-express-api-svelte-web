@@ -105,6 +105,60 @@ describe('/cat/ middlewares', () => {
 
         expect(next).toHaveBeenCalledWith(new Error(errorMessage))
       })
+
+      it('returns a 400 error if new cat is missing breed', async () => {
+        req.body = JSON.parse(JSON.stringify(mockData.catWithoutId))
+
+        delete req.body.breed
+        const errorMessage = 'Missing field: breed'
+
+        await middleware.add(req, res, next)
+
+        expect(res.statusCode).toBe(400)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+
+      it('returns a 400 error if new cat is missing eyeColor', async () => {
+        req.body = JSON.parse(JSON.stringify(mockData.catWithoutId))
+
+        delete req.body.eyeColor
+        const errorMessage = 'Missing field: eyeColor'
+
+        await middleware.add(req, res, next)
+
+        expect(res.statusCode).toBe(400)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+
+      it('returns a 400 error if new cat is missing name', async () => {
+        req.body = JSON.parse(JSON.stringify(mockData.catWithoutId))
+
+        delete req.body.name
+        const errorMessage = 'Missing field: name'
+
+        await middleware.add(req, res, next)
+
+        expect(res.statusCode).toBe(400)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
     })
   })
 
