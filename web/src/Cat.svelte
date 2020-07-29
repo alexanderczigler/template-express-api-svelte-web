@@ -23,6 +23,7 @@
   div {
     display: inline-block;
     margin-right: 24px;
+    margin-bottom: 24px;
     border-width: 1px;
     border-radius: 4px;
     border-color: #d0d0d0;
