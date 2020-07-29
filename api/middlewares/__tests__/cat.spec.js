@@ -8,6 +8,7 @@ afterEach(jest.clearAllMocks)
 describe('#cat middlewares', () => {
   const req = {
     body: {},
+    params: {},
   }
   const res = {
     cookie: jest.fn(),
@@ -17,13 +18,21 @@ describe('#cat middlewares', () => {
   }
   const next = jest.fn()
 
-  describe('add(...)', () => {
-    const mockCat = {
+  const mockData = {
+    cat: {
       breed: 'Maine Coon',
       eyeColor: 'Old Gold',
       name: 'Gramsci',
-    }
+    },
+    catHavingId: {
+      id: '9761bfd0-2789-4a68-999e-7c832bc886bf',
+      breed: 'Maine Coon',
+      eyeColor: 'Old Gold',
+      name: 'Gramsci',
+    },
+  }
 
+  describe('add(...)', () => {
     describe('when successful', () => {
       beforeEach(() => {
         databaseAdapter.addCat.mockResolvedValue(
@@ -35,7 +44,7 @@ describe('#cat middlewares', () => {
         await middleware.add(
           {
             body: {
-              ...mockCat,
+              ...mockData.cat,
             },
           },
           res,
@@ -54,7 +63,7 @@ describe('#cat middlewares', () => {
         await middleware.add(
           {
             body: {
-              ...mockCat,
+              ...mockData.cat,
             },
           },
           res,
@@ -64,7 +73,7 @@ describe('#cat middlewares', () => {
         expect(res.send).toHaveBeenCalledWith(
           expect.objectContaining({
             id: '31106574-97fa-429b-ab0a-05ecc5b8c264',
-            ...mockCat,
+            ...mockData.cat,
           })
         )
       })
@@ -82,7 +91,7 @@ describe('#cat middlewares', () => {
         await middleware.add(
           {
             body: {
-              ...mockCat,
+              ...mockData.cat,
             },
           },
           res,
@@ -162,35 +171,39 @@ describe('#cat middlewares', () => {
   })
 
   describe('del(...)', () => {
-    const id = 'meow'
-
     describe('when successful', () => {
       beforeEach(() => {
-        databaseAdapter.getCatById.mockResolvedValue({ id })
+        databaseAdapter.getCatById.mockResolvedValue({
+          id: mockData.catHavingId.id,
+        })
         databaseAdapter.deleteCat.mockResolvedValue()
       })
 
       it('calls database adapter to delete the cat', async () => {
-        await middleware.del({ params: { id } }, res, next)
-        expect(databaseAdapter.deleteCat).toHaveBeenCalledWith(id)
+        await middleware.del(
+          { params: { id: mockData.catHavingId.id } },
+          res,
+          next
+        )
+        expect(databaseAdapter.deleteCat).toHaveBeenCalledWith(
+          mockData.catHavingId.id
+        )
       })
 
       it('returns an empty object', async () => {
-        await middleware.del({ params: { id: 'meow' } }, res, next)
+        await middleware.del(
+          { params: { id: mockData.catHavingId.id } },
+          res,
+          next
+        )
         expect(res.send).toHaveBeenCalledWith({})
       })
     })
 
     describe('when failing', () => {
-      const mockCat = {
-        breed: 'Maine Coon',
-        eyeColor: 'Old Gold',
-        name: 'Gramsci',
-      }
-
-      const errorMessage = 'An unexpected error occurred when adding the cat.'
+      const errorMessage = 'An unexpected error occurred when deleting the cat.'
       beforeEach(() => {
-        databaseAdapter.getCatById.mockResolvedValueOnce(mockCat)
+        databaseAdapter.getCatById.mockResolvedValueOnce(mockData.catHavingId)
         databaseAdapter.getCatById.mockResolvedValueOnce(null)
         databaseAdapter.deleteCat.mockImplementation(() => {
           throw new Error(errorMessage)
@@ -198,7 +211,11 @@ describe('#cat middlewares', () => {
       })
 
       it('returns a 500 error if the underlying database layer throws an error', async () => {
-        await middleware.del({ params: { id } }, res, next)
+        await middleware.del(
+          { params: { id: mockData.catHavingId.id } },
+          res,
+          next
+        )
 
         expect(res.statusCode).toBe(500)
         expect(res.send).toHaveBeenCalledWith(
@@ -211,10 +228,73 @@ describe('#cat middlewares', () => {
       })
 
       it('returns a 404 when trying to delete a non-existing cat', async () => {
-        await middleware.del({ params: { id } }, res, next)
-        const errorMessage = 'Could not find any cat having ID meow.'
+        await middleware.del(
+          { params: { id: mockData.catHavingId.id } },
+          res,
+          next
+        )
+        const errorMessage = `Could not find any cat having ID ${mockData.catHavingId.id}.`
 
         expect(res.statusCode).toBe(404)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+    })
+  })
+
+  describe('get(...)', () => {
+    describe('when successful', () => {
+      beforeEach(() => {
+        databaseAdapter.getCatById.mockResolvedValue(mockData.catHavingId)
+      })
+
+      it('calls database adapter to get the cat and returns the cat', async () => {
+        await middleware.get(
+          { params: { id: mockData.catHavingId.id } },
+          res,
+          next
+        )
+
+        expect(databaseAdapter.getCatById).toHaveBeenCalledWith(
+          mockData.catHavingId.id
+        )
+
+        expect(res.send).toHaveBeenCalledWith(mockData.catHavingId)
+      })
+    })
+
+    describe('when failing', () => {
+      const errorMessage = 'An unexpected error occurred when getting the cat.'
+
+      it('returns a 404 when trying to get a non-existing cat', async () => {
+        databaseAdapter.getCatById.mockResolvedValue(null)
+
+        await middleware.del({ params: { id: 'non-existing' } }, res, next)
+        const errorMessage = `Could not find any cat having ID ${'non-existing'}.`
+
+        expect(res.statusCode).toBe(404)
+        expect(res.send).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: errorMessage,
+          })
+        )
+
+        expect(next).toHaveBeenCalledWith(new Error(errorMessage))
+      })
+
+      it('returns a 500 error if the underlying database layer throws an error', async () => {
+        databaseAdapter.getCatById.mockImplementation(() => {
+          throw new Error(errorMessage)
+        })
+
+        await middleware.get({ params: { id: 'error-cat' } }, res, next)
+
+        expect(res.statusCode).toBe(500)
         expect(res.send).toHaveBeenCalledWith(
           expect.objectContaining({
             message: errorMessage,

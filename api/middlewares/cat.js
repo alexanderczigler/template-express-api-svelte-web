@@ -48,22 +48,33 @@ module.exports = {
       return next()
     } catch (error) {
       res.statusCode = 500
-      res.send({ message: 'An unexpected error occurred when adding the cat.' })
+      res.send({
+        message: 'An unexpected error occurred when deleting the cat.',
+      })
       return next(error)
     }
   },
   get: async (req, res, next) => {
     const id = req.params.id
-    const cat = await getCatById(id)
 
-    if (cat) {
+    try {
+      cat = await getCatById(id)
+
+      if (!cat) {
+        const message = `Could not find any cat having ID ${id}.`
+        res.statusCode = 404
+        res.send({ message })
+        return next(new Error(message))
+      }
+
       res.send(cat)
       return next()
+    } catch (error) {
+      res.statusCode = 500
+      res.send({
+        message: 'An unexpected error occurred when getting the cat.',
+      })
+      return next(error)
     }
-
-    const error = { message: `Could not find any cat having ID ${id}.` }
-    res.statusCode = 404
-    res.send(error)
-    throw new Error(error.message)
   },
 }
