@@ -1,5 +1,6 @@
 <script>
   import { API } from './api.js'
+  import { API_URL } from './api_url.js'
   import Cat from './Cat.svelte'
   import Add from './Add.svelte'
 
@@ -49,8 +50,10 @@
       href="https://github.com/alexanderczigler/template-express-api-svelte-web">
       sample project
     </a>
-    featuring a Node Express API and a Svelte web app. The cats in the below are
-    fetched from the restful API.
+    featuring a Node Express API and a Svelte web app. The web app communicates
+    with the
+    <a href={API_URL}>API</a>
+    when you list, add and delete cats below.
   </p>
 
   <h2>Add a new cat</h2>

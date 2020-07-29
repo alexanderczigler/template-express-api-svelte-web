@@ -4,6 +4,7 @@ const conf = require('@iteam/config')({
     node_env: 'local',
     system: {
       port: 3000,
+      web: 'http://localhost:5000',
     },
   },
 })
