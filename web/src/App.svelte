@@ -13,7 +13,6 @@
 
 <style>
   main {
-    padding: 1em;
     max-width: 240px;
     margin: 0 auto;
   }
@@ -24,15 +23,18 @@
     font-weight: 100;
   }
 
-  h2 {
-    text-transform: uppercase;
-    font-size: 1.2em;
-    font-weight: 100;
-    margin-top: 42px;
+  p {
+    font-size: 0.9em;
+    font-weight: 200;
+    margin: 32px 0 0 33px;
   }
 
   p.info {
     font-size: 0.5em;
+  }
+
+  hr {
+    border-top: 1px solid #d0d0d0;
   }
 
   @media (min-width: 640px) {
@@ -56,10 +58,8 @@
     when you list, add and delete cats below.
   </p>
 
-  <h2>Add a new cat</h2>
   <Add on:reload={reloadCats} />
 
-  <h2>List cats</h2>
   {#await catsPromise}
     <p>Loading...</p>
   {:then cats}
@@ -70,4 +70,6 @@
   {:catch error}
     <p style="color: red">Error: {error.message}</p>
   {/await}
+
+  <hr />
 </main>
