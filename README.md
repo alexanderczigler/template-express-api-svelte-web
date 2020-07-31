@@ -23,3 +23,11 @@ In both terminal windows/tabs, run `npm ci` and then `npm run dev`. This will st
 Open a new terminal and go to the api/ directory, then run `npm run test -- --watch`. This will run jest and keep it running, watching for any file changes in the api project. Whenever you edit code the tests will run and you immideately know if you broke something that is covered by any test(s).
 
 The tests are found in the `__tests__` directories and called x.spec.js where x is the name of the module under test.
+
+## Quick start
+
+You can run the project with Docker too, there is a compose stack file in the project root directory.
+
+```bash
+docker-compose up
+```

@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  api:
+    build: api
+    environment:
+      SYSTEM__PORT: 4030
+      SYSTEM__WEB: http://localhost:4040
+    ports:
+      - 4030:4030
+
+  web:
+    build:
+      context: web
+      args:
+        API_HOST: localhost:4030
+    ports:
+      - 4040:80
